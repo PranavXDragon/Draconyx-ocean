@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sea Activity Report</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --accent: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --success: #22c55e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #020617, var(--bg));
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu;
+      color: var(--text);
+    }
+
+    .container {
+      width: min(94vw, 720px);
+      background: var(--card);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 30px 60px rgba(0,0,0,.6);
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 24px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    input[type="file"], textarea {
+      width: 100%;
+      background: #020617;
+      border: 1px solid #1f2933;
+      border-radius: 10px;
+      padding: 12px;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(180deg, #7dd3fc, var(--accent));
+      color: #020617;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #020617;
+      border: 1px solid #1f2933;
+      font-size: 14px;
+      white-space: pre-wrap;
+      display: none;
+    }
+
+    .loading {
+      margin-top: 20px;
+      text-align: center;
+      display: none;
+    }
+
+    .spinner {
+      border: 3px solid #1f2933;
+      border-top: 3px solid var(--accent);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .result-section {
+      margin: 10px 0;
+      padding: 10px;
+      background: #111827;
+      border-radius: 8px;
+    }
+
+    .result-section h3 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .result-item {
+      margin: 4px 0;
+      font-size: 13px;
+    }
+
+    .result-item strong {
+      color: var(--text);
+    }
+
+    .alert-success {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .alert-warning {
+      color: #f59e0b;
+      font-weight: 600;
+    }
+
+    .alert-danger {
+      color: #ef4444;
+      font-weight: 600;
+    }
+
+    .detection-list {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0;
+    }
+
+    .detection-list li {
+      padding: 4px 8px;
+      margin: 4px 0;
+      background: #020617;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    .detection-list li.detected {
+      border-left: 3px solid var(--success);
+    }
+
+    .detection-list li.not-detected {
+      border-left: 3px solid #4b5563;
+      color: var(--muted);
+    }
+
+    .risk-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .risk-low {
+      background: #166534;
+      color: var(--success);
+    }
+
+    .risk-medium {
+      background: #78350f;
+      color: #f59e0b;
+    }
+
+    .risk-high {
+      background: #7f1d1d;
+      color: #ef4444;
+    }
+
+    .consistency-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .consistency-match {
+      background: #166534;
+      color: var(--success);
+    }
+
+    .consistency-mismatch {
+      background: #7f1d1d;
+      color: #ef4444;
+    }
+
+    .consistency-partial {
+      background: #78350f;
+      color: #f59e0b;
+    }
+
+    .explanation-highlight {
+      background: #1e293b;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 8px;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    .reasoning-box {
+      background: #020617;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+      border-left: 3px solid var(--accent);
+    }
+
+    .footer {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌊 Sea Activity Reporting</h1>
+    <div class="subtitle">
+      Upload image or video + describe abnormal sea activity (waves, garbage, vessels)
+    </div>
+
+    <form id="reportForm">
+      <label for="file">Upload Image or Video</label>
+      <input type="file" id="file" name="file" accept="image/*,video/*" required />
+
+      <label for="text">Describe the activity</label>
+      <textarea id="text" name="text" placeholder="Example: Huge abnormal waves near the coast" required></textarea>
+
+      <button type="submit">Submit Report</button>
+    </form>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <div>Analyzing with AI models...</div>
+    </div>
+
+    <div id="result" class="result"></div>
+
+    <div class="footer">
+      This report will be verified using AI, satellite intelligence, and social validation.
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('reportForm');
+    const resultBox = document.getElementById('result');
+    const loadingBox = document.getElementById('loading');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      resultBox.style.display = 'none';
+      loadingBox.style.display = 'block';
+
+      const formData = new FormData(form);
+
+      try {
+        const res = await fetch('http://127.0.0.1:8000/report', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!res.ok) {
+          throw new Error(`Server returned ${res.status}`);
+        }
+
+        const data = await res.json();
+        loadingBox.style.display = 'none';
+        displayResults(data);
+      } catch (err) {
+        console.error('Error:', err);
+        loadingBox.style.display = 'none';
+        resultBox.style.display = 'block';
+        resultBox.innerHTML = '<div class="alert-danger">❌ Error: Unable to connect to backend. Make sure server is running.</div>';
+      }
+    });
+
+    function displayResults(data) {
+      const vision = data.vision_ai;
+      const final = data.final_decision;
+      const textUnderstanding = data.text_understanding || {};
+      
+      // Determine alert level
+      let alertClass = 'alert-success';
+      let alertIcon = '✅';
+      let riskLevel = 'LOW';
+      let riskClass = 'risk-low';
+      
+      const confidence = final.confidence || vision.clip_score || vision.average_clip_score || 0;
+      
+      if (confidence > 0.7 || final.alert_level === 'high') {
+        alertClass = 'alert-danger';
+        alertIcon = '🚨';
+        riskLevel = 'HIGH';
+        riskClass = 'risk-high';
+      } else if (confidence > 0.5 || final.alert_level === 'medium') {
+        alertClass = 'alert-warning';
+        alertIcon = '⚠️';
+        riskLevel = 'MEDIUM';
+        riskClass = 'risk-medium';
+      }
+
+      // Event type display
+      const eventType = vision.event_type || 'unknown';
+      const waveLabel = vision.wave_label || vision.predicted_label || 'N/A';
+      const clipScore = vision.clip_score || vision.average_clip_score || 0;
+      const framesAnalyzed = vision.frames_analyzed || 'Image';
+
+      // Text understanding
+      const consistency = textUnderstanding.consistency || 'UNKNOWN';
+      const consistencyScore = textUnderstanding.consistency_score || 0;
+      const textEvent = textUnderstanding.text_event || 'unknown';
+      const textConfidence = textUnderstanding.text_confidence || 0;
+      const severity = textUnderstanding.severity || {};
+      const explanation = textUnderstanding.explanation || 'No explanation available';
+      
+      let consistencyClass = 'consistency-partial';
+      let consistencyIcon = '⚠️';
+      if (consistency === 'STRONG_MATCH' || consistency === 'MATCH') {
+        consistencyClass = 'consistency-match';
+        consistencyIcon = '✓';
+      } else if (consistency === 'MISMATCH') {
+        consistencyClass = 'consistency-mismatch';
+        consistencyIcon = '✗';
+      }
+
+      // Quality Assessment
+      const quality = data.quality_assessment || {};
+      const qualityScore = quality.quality_score || 0;
+      const reliability = quality.reliability || 'UNKNOWN';
+      
+      let qualityClass = 'alert-success';
+      if (reliability === 'LOW' || reliability === 'VERY_LOW') {
+        qualityClass = 'alert-warning';
+      }
+      
+      // Temporal Analysis (for videos)
+      const temporal = vision.temporal_analysis || null;
+      const videoConsistency = vision.consistency_check || null;
+      
+      // Satellite Evidence
+      const satEvidence = data.satellite_verification.evidence || 'No evidence';
+      const satFeatures = data.satellite_verification.sar_features || {};
+
+      // Detected objects
+      const detectedObjects = vision.detected_objects || [];
+      const possibleDetections = ['boat', 'ship', 'person', 'garbage', 'debris', 'abnormal waves'];
+      
+      let detectedHTML = '';
+      if (detectedObjects.length > 0) {
+        detectedHTML = detectedObjects.map(obj => 
+          `<li class="detected">✔ ${obj}</li>`
+        ).join('');
+      } else {
+        detectedHTML = '<li class="not-detected">No objects detected by YOLO</li>';
+      }
+
+      let notDetectedHTML = possibleDetections
+        .filter(item => !detectedObjects.includes(item))
+        .map(item => `<li class="not-detected">✖ ${item}</li>`)
+        .join('');
+
+      // AI Reasoning
+      let reasoning = `The system analyzed ${framesAnalyzed === 'Image' ? 'the image' : framesAnalyzed + ' video frames'} and identified "${waveLabel}" patterns using vision-language models. ${detectedObjects.length > 0 ? 'Object detection found: ' + detectedObjects.join(', ') + '.' : 'No specific objects were detected.'} `;
+      
+      if (temporal) {
+        reasoning += `Temporal analysis shows ${temporal.trend} trend with ${temporal.stability} stability. `;
+      }
+      
+      reasoning += `Based on confidence scores and cross-validation with satellite and social signals, the risk level is ${riskLevel}.`;
+
+      const html = `
+        <div class="result-section">
+          <h3>${alertIcon} Analysis Summary</h3>
+          <div class="result-item"><strong>Event Type:</strong> ${eventType}</div>
+          <div class="result-item"><strong>Risk Level:</strong> <span class="risk-badge ${riskClass}">${riskLevel}</span></div>
+          <div class="result-item"><strong>Overall Confidence:</strong> ${(confidence * 100).toFixed(0)}%</div>
+          <div class="result-item"><strong>Input Type:</strong> ${framesAnalyzed === 'Image' ? 'Image' : 'Video (' + framesAnalyzed + ' frames)'}</div>
+          ${final.quality_warning ? `<div class="result-item alert-warning">⚠️ ${final.quality_warning}</div>` : ''}
+        </div>
+
+        <div class="result-section">
+          <h3>📊 Media Quality Assessment</h3>
+          <div class="result-item"><strong>Quality Score:</strong> ${(qualityScore * 100).toFixed(0)}%</div>
+          <div class="result-item"><strong>Reliability:</strong> <span class="${qualityClass}">${reliability}</span></div>
+          ${quality.issues && quality.issues.length > 0 ? 
+            `<div class="result-item"><strong>Issues:</strong> ${quality.issues.join(', ')}</div>` : ''}
+          <div class="result-item"><em>${quality.recommendation || 'Quality acceptable'}</em></div>
+        </div>
+
+        <div class="result-section">
+          <h3>📝 Report Understanding</h3>
+          <div class="result-item"><strong>Claimed Event:</strong> ${textEvent}</div>
+          <div class="result-item"><strong>Text Confidence:</strong> ${(textConfidence * 100).toFixed(0)}%</div>
+          <div class="result-item"><strong>Reported Severity:</strong> ${severity.level || 'N/A'}</div>
+          <div class="result-item">
+            <strong>Consistency Check:</strong> 
+            <span class="consistency-badge ${consistencyClass}">${consistencyIcon} ${consistency}</span>
+            <span style="margin-left: 8px;">(${(consistencyScore * 100).toFixed(0)}% match)</span>
+          </div>
+          <div class="explanation-highlight">
+            💡 ${explanation}
+          </div>
+        </div>
+
+        ${temporal ? `
+        <div class="result-section">
+          <h3>📈 Temporal Analysis (Video Intelligence)</h3>
+          <div class="result-item"><strong>Trend:</strong> ${temporal.trend}</div>
+          <div class="result-item"><strong>Stability:</strong> ${temporal.stability}</div>
+          <div class="result-item"><strong>Progression:</strong> ${temporal.progression}</div>
+          ${temporal.sudden_changes && temporal.sudden_changes.length > 0 ? 
+            `<div class="result-item alert-warning"><strong>Sudden Changes:</strong> ${temporal.sudden_changes.length} detected</div>` : ''}
+          <div class="result-item"><strong>Event Duration:</strong> ${temporal.event_duration_percentage}% of video</div>
+        </div>
+        ` : ''}
+
+        <div class="result-section">
+          <h3>🤖 Vision AI Analysis</h3>
+          <div class="result-item"><strong>Wave Condition:</strong> ${waveLabel}</div>
+          <div class="result-item"><strong>CLIP Score:</strong> ${clipScore.toFixed(2)}</div>
+          <div class="result-item"><strong>Vision Confidence:</strong> ${vision.vision_confidence || 0}</div>
+        </div>
+
+        <div class="result-section">
+          <h3>🔍 Detection Results</h3>
+          <h4 style="font-size: 13px; margin: 8px 0 4px 0; color: var(--text);">Detected:</h4>
+          <ul class="detection-list">${detectedHTML}</ul>
+          <h4 style="font-size: 13px; margin: 12px 0 4px 0; color: var(--text);">Not Detected:</h4>
+          <ul class="detection-list">${notDetectedHTML}</ul>
+        </div>
+
+        <div class="result-section">
+          <h3>🛰️ Satellite Verification (Sentinel-1 SAR)</h3>
+          <div class="result-item"><strong>Confidence:</strong> ${data.satellite_verification.confidence}</div>
+          <div class="result-item"><strong>Evidence:</strong> ${satEvidence}</div>
+          ${satFeatures.sea_state ? `<div class="result-item"><strong>Sea State:</strong> ${satFeatures.sea_state}</div>` : ''}
+          ${satFeatures.vessel_count ? `<div class="result-item"><strong>Vessels Detected:</strong> ${satFeatures.vessel_count}</div>` : ''}
+          <div class="result-item"><em style="font-size: 12px;">${data.satellite_verification.note || ''}</em></div>
+        </div>
+
+        <div class="result-section">
+          <h3>📱 Social Validation</h3>
+          <div class="result-item"><strong>Confidence:</strong> ${data.social_verification.confidence}</div>
+        </div>
+
+        <div class="result-section">
+          <h3>🧠 AI Reasoning</h3>
+          <div class="reasoning-box">${reasoning}</div>
+        </div>
+
+        <div class="result-section">
+          <h3>⚡ Final Decision</h3>
+          <div class="result-item ${alertClass}"><strong>Action:</strong> ${final.action || 'Review required'}</div>
+          <div class="result-item"><strong>Decision:</strong> ${final.decision}</div>
+        </div>
+      `;
+      
+      resultBox.innerHTML = html;
+      resultBox.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

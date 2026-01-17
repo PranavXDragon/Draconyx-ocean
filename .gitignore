@@ -7,6 +7,9 @@ ocean img model/coastal-ai/models/models--sentence-transformers--all-MiniLM-L6-v
 ocean img model/coastal-ai/models/models--sentence-transformers--all-mpnet-base-v2/
 ocean img model/coastal-ai/yolov8m.pt
 
+# Large video files
+ocean img model/coastal-ai/data/images/*.mp4
+
 # Python cache
 __pycache__/
 *.pyc
