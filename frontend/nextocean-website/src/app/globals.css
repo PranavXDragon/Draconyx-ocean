@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ocean-deep: #001f3f;
+  --ocean-mid: #0074D9;
+  --ocean-light: #39CCCC;
+  --danger: #FF4136;
+  --warning: #FF851B;
+  --safe: #2ECC40;
+}
+
+@layer base {
+  body {
+    @apply bg-gradient-to-b from-slate-900 via-blue-950 to-slate-900 text-white overflow-x-hidden;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20;
+  }
+  
+  .glow {
+    box-shadow: 0 0 20px rgba(57, 204, 204, 0.5);
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent;
+  }
+}
+
+/* Leaflet override */
+.leaflet-container {
+  background: rgba(0, 31, 63, 0.8);
+  border-radius: 1rem;
+  box-shadow: 0 0 40px rgba(57, 204, 204, 0.3);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 31, 63, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #39CCCC, #0074D9);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #57E0E0, #2088ED);
+}
