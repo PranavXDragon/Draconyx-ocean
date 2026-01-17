@@ -2,12 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { ShieldOff } from 'lucide-react';
+import Image from 'next/image';
+import { ShieldOff, CheckCircle } from 'lucide-react';
 import Hero from '@/components/features/hero/Hero';
 import ReportForm from '@/components/features/reports/ReportForm';
 import AlertsPanel from '@/components/features/reports/AlertsPanel';
 import AboutPanel from '@/components/features/about/AboutPanel';
 import AuthModal from '@/components/features/auth/AuthModal';
+import Dashboard from '@/components/features/dashboard/Dashboard';
+import AuthorityDashboard from '@/components/features/authority/AuthorityDashboard';
+import EmergencyBroadcast from '@/components/features/emergency/EmergencyBroadcast';
+import ContactModal from '@/components/features/legal/ContactModal';
+import FAQModal from '@/components/features/legal/FAQModal';
+import PrivacyPolicyModal from '@/components/features/legal/PrivacyPolicyModal';
+import TermsOfServiceModal from '@/components/features/legal/TermsOfServiceModal';
+import CookiePolicyModal from '@/components/features/legal/CookiePolicyModal';
 import Footer from '@/components/layout/Footer';
 import Navigation from '@/components/layout/Navigation';
 import ParticlesBackground from '@/components/ui/ParticlesBackground';
@@ -66,8 +75,18 @@ export default function Home() {
   const [showAlertsPanel, setShowAlertsPanel] = useState(false);
   const [showAboutPanel, setShowAboutPanel] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
+  const [showAuthorityDashboard, setShowAuthorityDashboard] = useState(false);
+  const [showEmergencyBroadcast, setShowEmergencyBroadcast] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [showFAQModal, setShowFAQModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showCookiesModal, setShowCookiesModal] = useState(false);
   const [pendingAction, setPendingAction] = useState<'report' | 'alerts' | null>(null);
   const [isNavCustomizing, setIsNavCustomizing] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [generatedReportId, setGeneratedReportId] = useState('');
 
   // Keyboard shortcut for bypass mode (Ctrl+Shift+B)
   useEffect(() => {
@@ -110,6 +129,9 @@ export default function Home() {
   };
 
   const handleNewReport = (report: Omit<IncidentReport, 'id' | 'timestamp' | 'status'>) => {
+    // Generate unique report ID
+    const uniqueId = `OCN-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+    
     const newReport: IncidentReport = {
       ...report,
       id: Date.now().toString(),
@@ -118,6 +140,11 @@ export default function Home() {
     };
     setReports([newReport, ...reports]);
     setShowReportForm(false);
+    
+    // Store the generated report ID and show success notification
+    setGeneratedReportId(uniqueId);
+    setShowSuccessToast(true);
+    setTimeout(() => setShowSuccessToast(false), 5000);
   };
 
   return (
@@ -130,6 +157,9 @@ export default function Home() {
         onReportClick={handleReportClick}
         onAlertsClick={handleAlertsClick}
         onAboutClick={() => setShowAboutPanel(true)}
+        onDashboardClick={() => setShowDashboard(true)}
+        onAuthorityClick={() => setShowAuthorityDashboard(true)}
+        onEmergencyClick={() => setShowEmergencyBroadcast(true)}
         onCustomizingChange={setIsNavCustomizing}
       />
       
@@ -175,58 +205,114 @@ export default function Home() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Step 1 */}
-              <div className="glass rounded-2xl p-8 hover:glow transition-all duration-300 group relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-bl-full" />
-                <div className="relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-3xl font-bold text-white">1</span>
+              <div className="flip-card h-80 sm:h-96">
+                <div className="flip-card-inner">
+                  {/* Front - Image */}
+                  <div className="flip-card-front rounded-2xl overflow-hidden">
+                    <Image 
+                      src="/Step 1.png" 
+                      alt="Step 1" 
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">{t('guide.step1.title')}</h3>
-                  <p className="text-gray-300 leading-relaxed">
-                    {t('guide.step1.desc')}
-                  </p>
+                  {/* Back - Card Content */}
+                  <div className="flip-card-back glass rounded-2xl p-8 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-bl-full" />
+                    <div className="relative z-10">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-6">
+                        <span className="text-3xl font-bold text-white">1</span>
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-4">{t('guide.step1.title')}</h3>
+                      <p className="text-gray-300 leading-relaxed">
+                        {t('guide.step1.desc')}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Step 2 */}
-              <div className="glass rounded-2xl p-8 hover:glow transition-all duration-300 group relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-500/20 to-pink-600/20 rounded-bl-full" />
-                <div className="relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-3xl font-bold text-white">2</span>
+              <div className="flip-card h-80 sm:h-96">
+                <div className="flip-card-inner">
+                  {/* Front - Image */}
+                  <div className="flip-card-front rounded-2xl overflow-hidden">
+                    <Image 
+                      src="/Step 2.png" 
+                      alt="Step 2" 
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">{t('guide.step2.title')}</h3>
-                  <p className="text-gray-300 leading-relaxed">
-                    {t('guide.step2.desc')}
-                  </p>
+                  {/* Back - Card Content */}
+                  <div className="flip-card-back glass rounded-2xl p-8 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-500/20 to-pink-600/20 rounded-bl-full" />
+                    <div className="relative z-10">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-6">
+                        <span className="text-3xl font-bold text-white">2</span>
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-4">{t('guide.step2.title')}</h3>
+                      <p className="text-gray-300 leading-relaxed">
+                        {t('guide.step2.desc')}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Step 3 */}
-              <div className="glass rounded-2xl p-8 hover:glow transition-all duration-300 group relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-500/20 to-emerald-600/20 rounded-bl-full" />
-                <div className="relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-3xl font-bold text-white">3</span>
+              <div className="flip-card h-80 sm:h-96">
+                <div className="flip-card-inner">
+                  {/* Front - Image */}
+                  <div className="flip-card-front rounded-2xl overflow-hidden">
+                    <Image 
+                      src="/Step 3.png" 
+                      alt="Step 3" 
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">{t('guide.step4.title')}</h3>
-                  <p className="text-gray-300 leading-relaxed">
-                    {t('guide.step4.desc')}
-                  </p>
+                  {/* Back - Card Content */}
+                  <div className="flip-card-back glass rounded-2xl p-8 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-500/20 to-emerald-600/20 rounded-bl-full" />
+                    <div className="relative z-10">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mb-6">
+                        <span className="text-3xl font-bold text-white">3</span>
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-4">{t('guide.step4.title')}</h3>
+                      <p className="text-gray-300 leading-relaxed">
+                        {t('guide.step4.desc')}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Step 4 */}
-              <div className="glass rounded-2xl p-8 hover:glow transition-all duration-300 group relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-500/20 to-red-600/20 rounded-bl-full" />
-                <div className="relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-3xl font-bold text-white">4</span>
+              <div className="flip-card h-80 sm:h-96">
+                <div className="flip-card-inner">
+                  {/* Front - Image */}
+                  <div className="flip-card-front rounded-2xl overflow-hidden">
+                    <Image 
+                      src="/Step 4.png" 
+                      alt="Step 4" 
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">{t('guide.step3.title')}</h3>
-                  <p className="text-gray-300 leading-relaxed">
-                    {t('guide.step3.desc')}
-                  </p>
+                  {/* Back - Card Content */}
+                  <div className="flip-card-back glass rounded-2xl p-8 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-500/20 to-red-600/20 rounded-bl-full" />
+                    <div className="relative z-10">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center mb-6">
+                        <span className="text-3xl font-bold text-white">4</span>
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-4">{t('guide.step3.title')}</h3>
+                      <p className="text-gray-300 leading-relaxed">
+                        {t('guide.step3.desc')}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -257,6 +343,26 @@ export default function Home() {
         />
       )}
 
+      {showDashboard && (
+        <Dashboard
+          onClose={() => setShowDashboard(false)}
+          userReports={reports}
+        />
+      )}
+
+      {showAuthorityDashboard && (
+        <AuthorityDashboard
+          onClose={() => setShowAuthorityDashboard(false)}
+          allReports={reports}
+        />
+      )}
+
+      {showEmergencyBroadcast && (
+        <EmergencyBroadcast
+          onClose={() => setShowEmergencyBroadcast(false)}
+        />
+      )}
+
       {showReportForm && (
         <ReportForm
           onClose={() => setShowReportForm(false)}
@@ -275,8 +381,63 @@ export default function Home() {
         />
       )}
 
+      {/* Success Toast Notification */}
+      {showSuccessToast && (
+        <>
+          {/* Backdrop Blur Overlay */}
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-md z-[99] animate-in fade-in" />
+          
+          {/* Notification */}
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[100] animate-in zoom-in w-[90vw] sm:w-auto max-w-md px-4 sm:px-0">
+            <div className="glass rounded-xl p-4 sm:p-6 shadow-2xl border border-green-400/30 backdrop-blur-xl bg-gradient-to-r from-green-500/20 to-emerald-600/20 w-full sm:min-w-[400px]">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                  <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-white font-semibold text-base sm:text-lg mb-1">
+                    Report Submitted Successfully
+                  </h4>
+                  <p className="text-gray-300 text-xs sm:text-sm mb-2">
+                    Your report has been received and authorities have been notified.
+                  </p>
+                  <div className="bg-black/30 rounded px-2 sm:px-3 py-1.5 sm:py-2 border border-green-400/30">
+                    <p className="text-[10px] sm:text-xs text-gray-400 mb-0.5">Report ID:</p>
+                    <p className="text-green-400 font-mono text-xs sm:text-sm font-semibold break-all">{generatedReportId}</p>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={() => setShowSuccessToast(false)}
+                  className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
+                >
+                  <span className="text-xl sm:text-2xl">×</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Legal Modals */}
+      {showContactModal && <ContactModal onClose={() => setShowContactModal(false)} />}
+      {showFAQModal && <FAQModal onClose={() => setShowFAQModal(false)} />}
+      {showPrivacyModal && <PrivacyPolicyModal onClose={() => setShowPrivacyModal(false)} />}
+      {showTermsModal && <TermsOfServiceModal onClose={() => setShowTermsModal(false)} />}
+      {showCookiesModal && <CookiePolicyModal onClose={() => setShowCookiesModal(false)} />}
+
       {/* Footer */}
-      <Footer />
+      <Footer 
+        onReportClick={handleReportClick}
+        onAlertsClick={handleAlertsClick}
+        onAboutClick={() => setShowAboutPanel(true)}
+        onContactClick={() => setShowContactModal(true)}
+        onFAQClick={() => setShowFAQModal(true)}
+        onPrivacyClick={() => setShowPrivacyModal(true)}
+        onTermsClick={() => setShowTermsModal(true)}
+        onCookiesClick={() => setShowCookiesModal(true)}
+      />
     </>
   );
 }

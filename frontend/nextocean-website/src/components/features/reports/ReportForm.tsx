@@ -107,10 +107,8 @@ export default function ReportForm({ onSubmit, onClose }: ReportFormProps) {
           
           setReportId(generatedId);
           
-          // Close form after submission
-          setTimeout(() => {
-            onClose();
-          }, 100);
+          // Close form immediately after submission
+          onClose();
         } else {
           // Simulate failure
           throw new Error('Submission failed');
@@ -291,7 +289,7 @@ export default function ReportForm({ onSubmit, onClose }: ReportFormProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-sm overflow-y-auto"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -305,18 +303,18 @@ export default function ReportForm({ onSubmit, onClose }: ReportFormProps) {
           stiffness: 300,
           damping: 30
         }}
-        className="form-modal glass rounded-3xl w-full max-w-2xl my-8 relative"
+        className="form-modal glass rounded-2xl sm:rounded-3xl w-full max-w-sm sm:max-w-lg md:max-w-xl lg:max-w-2xl my-4 sm:my-8 relative"
       >
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div className="p-3 sm:p-4 md:p-6 lg:p-8">
           {/* Header */}
           <motion.div 
             initial={{ y: -10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="flex items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4"
+            className="flex items-start sm:items-center justify-between mb-4 sm:mb-6 md:mb-8 gap-2 sm:gap-4"
           >
             <div className="flex-1">
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
                 {t('report.title')}
               </h2>
             </div>
@@ -326,7 +324,7 @@ export default function ReportForm({ onSubmit, onClose }: ReportFormProps) {
               transition={{ type: "spring", stiffness: 400 }}
               type="button"
               onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg flex-shrink-0"
+              className="text-gray-400 hover:text-white transition-colors p-1 sm:p-2 hover:bg-white/10 rounded-lg flex-shrink-0"
               aria-label="Close"
             >
               <X className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -338,16 +336,16 @@ export default function ReportForm({ onSubmit, onClose }: ReportFormProps) {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
             onSubmit={handleSubmit} 
-            className="space-y-4 sm:space-y-6"
+            className="space-y-3 sm:space-y-4 md:space-y-6"
           >
             {/* Location Section */}
             <motion.div 
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="space-y-4"
+              className="space-y-3 sm:space-y-4"
             >
-              <h3 className="text-base sm:text-lg font-semibold text-white flex items-center gap-2">
+              <h3 className="text-sm sm:text-base md:text-lg font-semibold text-white flex items-center gap-2">
                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400" />
                 {t('report.location')}
               </h3>
@@ -707,7 +705,7 @@ export default function ReportForm({ onSubmit, onClose }: ReportFormProps) {
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.6 }}
                 >
-                  <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-gray-200 flex items-center gap-2">
+                  <label className="flex text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-gray-200 items-center gap-2">
                     <Upload className="w-3 h-3 sm:w-4 sm:h-4" />
                     Upload Photos/Videos <span className="text-red-400">*</span>
                   </label>

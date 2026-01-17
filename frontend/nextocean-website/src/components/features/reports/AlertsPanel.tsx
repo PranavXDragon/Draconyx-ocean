@@ -76,7 +76,7 @@ export default function AlertsPanel({ reports, onClose }: AlertsPanelProps) {
       {/* Panel */}
       <div 
         ref={panelRef}
-        className="fixed right-0 top-0 bottom-0 w-full max-w-2xl bg-gradient-to-br from-slate-900/95 to-blue-900/95 backdrop-blur-xl shadow-2xl z-[91] overflow-y-auto border-l border-white/10"
+        className="fixed right-0 top-0 bottom-0 w-full sm:max-w-md md:max-w-lg lg:max-w-2xl bg-gradient-to-br from-slate-900/95 to-blue-900/95 backdrop-blur-xl shadow-2xl z-[91] overflow-y-auto border-l border-white/10"
       >
         <div className="p-6 sm:p-8">
           {/* Header */}

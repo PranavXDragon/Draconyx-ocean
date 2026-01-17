@@ -15,8 +15,8 @@ export default function AboutPanel({ onClose }: AboutPanelProps) {
     if (panelRef.current) {
       gsap.fromTo(
         panelRef.current,
-        { x: 500, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.4, ease: 'power3.out' }
+        { scale: 0.9, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.4, ease: 'power3.out' }
       );
     }
   }, []);
@@ -59,12 +59,13 @@ export default function AboutPanel({ onClose }: AboutPanelProps) {
         onClick={onClose}
       />
 
-      {/* Panel */}
+      {/* Panel - Centered */}
       <div 
         ref={panelRef}
-        className="fixed right-0 top-0 bottom-0 w-full max-w-2xl bg-gradient-to-br from-slate-900/95 to-blue-900/95 backdrop-blur-xl shadow-2xl z-[91] overflow-y-auto border-l border-white/10"
+        className="fixed inset-0 flex items-center justify-center z-[91] p-4"
       >
-        <div className="p-6 sm:p-8">
+        <div className="w-full max-w-4xl max-h-[90vh] bg-gradient-to-br from-slate-900/95 to-blue-900/95 backdrop-blur-xl shadow-2xl rounded-2xl overflow-y-auto border border-white/10">
+          <div className="p-6 sm:p-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
@@ -155,6 +156,7 @@ export default function AboutPanel({ onClose }: AboutPanelProps) {
               Start Reporting
             </button>
           </div>
+        </div>
         </div>
       </div>
     </>

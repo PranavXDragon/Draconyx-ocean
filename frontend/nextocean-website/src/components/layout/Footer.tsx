@@ -3,9 +3,59 @@
 import { Waves, Mail, Phone, MapPin, Github, Twitter, Linkedin, Facebook } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-export default function Footer() {
+interface FooterProps {
+  onReportClick: () => void;
+  onAlertsClick: () => void;
+  onAboutClick: () => void;
+  onContactClick: () => void;
+  onFAQClick: () => void;
+  onPrivacyClick: () => void;
+  onTermsClick: () => void;
+  onCookiesClick: () => void;
+}
+
+export default function Footer({ 
+  onReportClick, 
+  onAlertsClick, 
+  onAboutClick,
+  onContactClick,
+  onFAQClick,
+  onPrivacyClick,
+  onTermsClick,
+  onCookiesClick 
+}: FooterProps) {
   const currentYear = new Date().getFullYear();
   const { t } = useLanguage();
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    
+    if (href === '#home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (href === '#report') {
+      onReportClick();
+    } else if (href === '#alerts') {
+      onAlertsClick();
+    } else if (href === '#about') {
+      onAboutClick();
+    } else if (href === '#contact') {
+      onContactClick();
+    } else if (href === '#faq') {
+      onFAQClick();
+    } else if (href === '#privacy') {
+      onPrivacyClick();
+    } else if (href === '#terms') {
+      onTermsClick();
+    } else if (href === '#cookies') {
+      onCookiesClick();
+    } else if (href.startsWith('#')) {
+      // Scroll to section
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
 
   const quickLinks = [
     { label: t('footer.home'), href: '#home' },
@@ -18,7 +68,7 @@ export default function Footer() {
     { label: t('footer.about'), href: '#about' },
     { label: t('footer.contact'), href: '#contact' },
     { label: t('footer.faq'), href: '#faq' },
-    { label: t('footer.howToUse'), href: '#docs' },
+    { label: t('footer.howToUse'), href: '#guide' },
   ];
 
   const legal = [
@@ -91,7 +141,8 @@ export default function Footer() {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-gray-400 hover:text-cyan-400 transition-colors text-sm block"
+                    onClick={(e) => handleLinkClick(e, link.href)}
+                    className="text-gray-400 hover:text-cyan-400 transition-colors text-sm block cursor-pointer"
                   >
                     {link.label}
                   </a>
@@ -108,7 +159,8 @@ export default function Footer() {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-gray-400 hover:text-cyan-400 transition-colors text-sm block"
+                    onClick={(e) => handleLinkClick(e, link.href)}
+                    className="text-gray-400 hover:text-cyan-400 transition-colors text-sm block cursor-pointer"
                   >
                     {link.label}
                   </a>
@@ -125,7 +177,8 @@ export default function Footer() {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-gray-400 hover:text-cyan-400 transition-colors text-sm block"
+                    onClick={(e) => handleLinkClick(e, link.href)}
+                    className="text-gray-400 hover:text-cyan-400 transition-colors text-sm block cursor-pointer"
                   >
                     {link.label}
                   </a>

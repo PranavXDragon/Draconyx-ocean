@@ -79,14 +79,14 @@ export default function OceanMap({ reports }: OceanMapProps) {
 
   if (!mounted) {
     return (
-      <div className="w-full h-[600px] glass rounded-2xl flex items-center justify-center">
-        <div className="text-cyan-400 text-xl">Loading map...</div>
+      <div className="w-full h-[400px] sm:h-[500px] md:h-[600px] glass rounded-2xl flex items-center justify-center">
+        <div className="text-cyan-400 text-lg sm:text-xl">Loading map...</div>
       </div>
     );
   }
 
   return (
-    <div ref={mapRef} className="w-full h-[600px] glass rounded-2xl overflow-hidden">
+    <div ref={mapRef} className="w-full h-[400px] sm:h-[500px] md:h-[600px] glass rounded-2xl overflow-hidden">
       <MapContainer
         center={[20, 0]}
         zoom={2}
