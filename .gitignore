@@ -1,0 +1,30 @@
+# Large model files - don't upload
+ocean img model/coastal-ai/models/all-MiniLM-L6-v2/
+ocean img model/coastal-ai/models/all-mpnet-base-v2/
+ocean img model/coastal-ai/models/clip-vit-large-patch14/
+ocean img model/coastal-ai/models/models--openai--clip-vit-large-patch14/
+ocean img model/coastal-ai/models/models--sentence-transformers--all-MiniLM-L6-v2/
+ocean img model/coastal-ai/models/models--sentence-transformers--all-mpnet-base-v2/
+ocean img model/coastal-ai/yolov8m.pt
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
